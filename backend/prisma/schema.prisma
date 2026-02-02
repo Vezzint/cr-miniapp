@@ -1,0 +1,60 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  telegramId  BigInt    @unique
+  username    String? 
+  firstName   String?
+  lastName    String?
+  trophies    Int       @default(0)
+  createdAt   DateTime  @default(now())
+  battles     Battle[]
+}
+
+model Season {
+  id         Int       @id @default(autoincrement())
+  name       String
+  startDate  DateTime
+  endDate    DateTime
+  isActive   Boolean   @default(true)
+  battles    Battle[]
+}
+
+model Mode {
+  id          Int       @id @default(autoincrement())
+  key         String    @unique
+  name        String
+  description String
+  createdAt   DateTime  @default(now())
+  battles     Battle[]
+}
+
+model Battle {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  season     Season?  @relation(fields: [seasonId], references: [id])
+  seasonId   Int?
+  mode       Mode     @relation(fields: [modeId], references: [id])
+  modeId     Int
+  result     String   // "win" | "lose" | "draw"
+  deltaTrophies Int
+  createdAt  DateTime @default(now())
+}
+
+model Reward {
+  id        Int      @id @default(autoincrement())
+  season    Season   @relation(fields: [seasonId], references: [id])
+  seasonId  Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  tier      String   // "gold" | "silver" | "bronze" ...
+  createdAt DateTime @default(now())
+}
