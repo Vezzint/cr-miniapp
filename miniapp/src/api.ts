@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://your-backend-domain.com/api"
+  baseURL: "https://vezzint.github.io/cr-miniapp/api" // временно, чтобы не падало
 });
 
 export async function authWithInitData(initData: string) {
